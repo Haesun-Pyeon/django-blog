@@ -1,0 +1,10 @@
+<h1>마이페이지</h1>
+<p>{{ user.username }}</p>
+<p>{{ user.email }}</p>
+<p>{{ user.nickname }}</p>
+{% if user.profile_img %}
+<img src='{{ user.profile_img.url }}' style='width:50%;'>
+{% endif %}
+{% if user.introduce %}
+<p>{{ user.introduce }}</p>
+{% endif %}

@@ -1,0 +1,15 @@
+home 페이지입니다.
+들어가기버튼--postlist로 연결
+<hr>
+테스트용----
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<h1>index</h1>
+{% if user.is_authenticated %}
+<p>{{ user }}</p>
+<p>로그아웃 버튼</p>
+{% else %}
+<p>로그인 회원가입 버튼</p>
+{% endif %}
