@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # External Apps
     'django_bootstrap5',
+    'markdown_deux',
+    # Project Apps
     'main',
     'blog',
     'accounts',

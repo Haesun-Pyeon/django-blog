@@ -1,3 +1,4 @@
+# accounts/forms.py
 from .models import User
 from django.contrib.auth.forms import UserCreationForm
 

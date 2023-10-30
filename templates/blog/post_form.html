@@ -1,0 +1,54 @@
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Toast Editor -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+</head>
+<body>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <table class="table">
+            <tr>
+                <th><label for="id_tags">Tags:</label></th>
+                <td><input type="text" name="tags_str" id="id_tags_str"></td>
+            </tr>
+            <tr>
+                <th><label for="id_content_editor">Content_editor:</label></th>
+                <td><div id="editor"></div></td>
+            </tr>
+        </table>
+        <button type="submit" id="submitbtn" class='btn btn-primary'>작성</button>
+    </form>
+    <script>
+        const $content = document.querySelector('#id_content')
+        document.querySelector('label[for="id_content"]').style.display = "none";
+        $content.style.display = "none";
+        
+        const Editor = toastui.Editor;
+
+        const editor = new Editor({
+            el: document.querySelector("#editor"),
+            height: "600px",
+            initialEditType: "markdown",
+            initialValue: $content.innerText,
+            previewStyle: "vertical",
+        });
+
+        // editor.getHTML()
+        // editor.getMarkdown()
+        document.getElementById('submitbtn').addEventListener('click', function(){
+            const markdownContent = editor.getMarkdown();
+            $content.value = markdownContent;
+        });
+    </script>
+</body>
+</html>

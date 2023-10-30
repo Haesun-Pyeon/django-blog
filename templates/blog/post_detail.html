@@ -1,0 +1,134 @@
+{% load django_bootstrap5 %}
+{% load markdown_deux_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <!-- fontawesome cdn -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Toast Editor -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.min.css" />
+</head>
+<body>
+    <h1>detail</h1>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">About</a></li>
+        </ul>
+    </nav>
+    <main id="main">
+    <p>{{ post.title }}</p>
+    <p>{{ post.content | markdown }}</p>
+    <div id='viewer'></div>
+    {% if post.head_image %}
+    <img src="{{ post.head_image.url }}" alt="" srcset="" style='width: 100%;'>
+    {% endif %}
+    {% if post.file_upload %}
+    Download:
+    <a href="{{ post.file_upload.url }}" alt="" srcset="">
+        {% if post.get_file_ext == 'csv' %}
+            <i class="fas fa-file-csv"></i>
+        {% elif post.get_file_ext == 'pdf' %}
+            <i class="fas fa-file-pdf"></i>
+        {% elif post.get_file_ext == 'zip' %}
+            <i class="fas fa-file-archive"></i>
+        {% elif post.get_file_ext == 'jpg' %}
+            <i class="fas fa-file-image"></i>
+        {% elif post.get_file_ext == 'png' %}
+            <i class="fas fa-file-image"></i>
+        {% elif post.get_file_ext == 'docx' or post.get_file_ext == 'doc' %}
+            <i class="fas fa-file-word"></i>
+        {% elif post.get_file_ext == 'pptx' or post.get_file_ext == 'ppt' %}
+            <i class="fas fa-file-powerpoint"></i>
+        {% elif post.get_file_ext == 'xls' %}
+            <i class="fas fa-file-excel"></i>
+        {% elif post.get_file_ext == 'mp3' %}
+            <i class="fas fa-file-audio"></i>
+        {% elif post.get_file_ext == 'mp4' %}
+            <i class="fas fa-file-video"></i>
+        {% else %}
+            <i class="fas fa-file"></i>
+        {% endif %}
+        {{ post.file_upload.name }}</a>
+    {% endif %}
+    <p>{{ post.created_at }}</p>
+    <p>by {{ post.author }}</p>
+    <p>조회수: {{ post.view_count }}</p>
+    <p>태그들: 
+        {% for t in post.tags.all %}
+        <a href="{% url 'tag' t.slug %}">#{{t.name}}</a>
+        {% endfor %}
+    </p>
+
+    {% if user == post.author %}
+    <button class='btn btn-primary' onclick="location.href='{% url 'post_edit' post.pk %}'">수정</button>
+    <!-- Button that opens a modal -->
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete_item">
+        삭제
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="delete_item" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete_item_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="delete_item_label">글 삭제</h5>
+            </div>
+
+            <form action="{% url 'post_delete' post.pk %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>정말로 이 글을 삭제하시겠습니까?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="submit" class="btn btn-danger" value="Confirm">삭제</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if post.comments.exists %}
+        <h2>댓글</h2>
+        {% for comment in post.comments.all %}
+            <p>{{ comment.content }}</p>
+            <p>{{ comment.created_at }}</p>
+            <p>by {{ comment.author }}</p>
+            {% if user.is_authenticated and comment.author == user %}
+            <a role="button" href="/blog/comment-edit/{{comment.pk}}">수정</a>
+            <a role="button" href="/blog/comment-del/{{comment.pk}}">삭제</a>
+            {% endif %}
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>아직 댓글이 없습니다.</p>
+    {% endif %}
+    {% if user.is_authenticated %}
+    <form id="comment-form" action="{{post.get_absolute_url}}comment-new/" method="post">
+        {% csrf_token %}
+        {{comment_form.as_p}}
+        <button type="submit" class='btn btn-primary'>작성</button>
+    </form>
+    {% endif %}
+
+    <button class='btn btn-primary' onclick="location.href='{% url 'post_list' %}'">목록</button>
+
+    </main>
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.js">
+        const viewer = new Viewer({
+            el: document.querySelector('#viewer'),
+            height: '600px',
+            initialValue: '# hello'
+        });
+    </script>
+</body>
+</html>

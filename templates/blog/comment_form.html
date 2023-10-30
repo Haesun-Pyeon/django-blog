@@ -1,0 +1,15 @@
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<h1>
+    {% if is_write %}
+    댓글 작성
+    {% else %}
+    댓글 수정
+    {% endif %}
+</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <input type="submit" value="작성" class="btn btn-primary">
+</form>
