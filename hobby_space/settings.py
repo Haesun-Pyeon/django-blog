@@ -146,3 +146,9 @@ LOGIN_REDIRECT_URL = '/accounts/mypage/'
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_IMAGE_BACKEND = 'pillow'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'resize_enabled': False,
+        'height': '500px',
+    },
+}

@@ -1,15 +1,18 @@
-home 페이지입니다.
-들어가기버튼--postlist로 연결
-<hr>
-테스트용----
 {% load django_bootstrap5 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 
-<h1>index</h1>
+<h1>Home</h1>
+<button class='btn btn-primary' onclick="location.href='{% url 'post_list' %}'">들어가기</button>
+<button class='btn btn-primary' onclick="location.href='{% url 'about' %}'">about</button>
+<button class='btn btn-primary' onclick="location.href='{% url 'contact' %}'">contact</button>
+<hr>
 {% if user.is_authenticated %}
-<p>{{ user }}</p>
-<p>로그아웃 버튼</p>
+<p>{{ user }}님 안녕하세요!</p>
+<button class='btn btn-primary' onclick="location.href='{% url 'mypage' %}'">마이페이지</button>
+<button class='btn btn-primary' onclick="location.href='{% url 'logout' %}'">로그아웃</button>
 {% else %}
-<p>로그인 회원가입 버튼</p>
+<button class='btn btn-primary' onclick="location.href='{% url 'login' %}'">로그인</button>
+<button class='btn btn-primary' onclick="location.href='{% url 'register' %}'">회원가입</button>
+
 {% endif %}

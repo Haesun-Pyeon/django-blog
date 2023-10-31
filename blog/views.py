@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from .models import Post, Category, Tag, Comment
-from .forms import CommentForm
+from .forms import PostForm, CommentForm
 from django.utils.text import slugify
 from django.db.models import Q
 from django.urls import reverse_lazy
@@ -17,7 +17,7 @@ class PostList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PostList, self).get_context_data(**kwargs)
-        context['category_list'] = Category.objects.all().order_by('-name')
+        context['category_list'] = Category.objects.all().order_by('name')
         context['no_category_post_count'] = Post.objects.filter(
             category=None).count()
         return context
@@ -27,7 +27,7 @@ class PostList(ListView):
         search_keyword = self.request.GET.get('q')
         if search_keyword:
             queryset = queryset.filter(Q(title__icontains=search_keyword) | Q(
-                content__icontains=search_keyword) | Q(tags__name__icontains=search_keyword)).distinct()
+                content__icontains=search_keyword)).distinct()
         return queryset
 
 
@@ -36,9 +36,6 @@ class PostDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PostDetail, self).get_context_data(**kwargs)
-        context['categories'] = Category.objects.all().order_by('-name')
-        context['no_category_post_count'] = Post.objects.filter(
-            category=None).count()
         context['comment_form'] = CommentForm
         return context
 
@@ -52,7 +49,7 @@ class PostDetail(DetailView):
 
 class PostCreate(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content', 'category']
+    form_class = PostForm
 
     def form_valid(self, form):
         current_user = self.request.user
@@ -77,10 +74,25 @@ class PostCreate(LoginRequiredMixin, CreateView):
 
 class PostUpdate(UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content', 'category', 'tags']
+    form_class = PostForm
 
     def test_func(self):
         return self.get_object().author == self.request.user
+
+    def form_valid(self, form):
+        response = super(PostUpdate, self).form_valid(form)
+        tags_str = self.request.POST.get('tags_str')
+        if tags_str:
+            tags_str = tags_str.strip()
+            tags_list = tags_str.split(',')
+            for t in tags_list:
+                t = t.strip()
+                tag, is_tag_created = Tag.objects.get_or_create(name=t)
+                if is_tag_created:
+                    tag.slug = slugify(t, allow_unicode=True)
+                    tag.save()
+                self.object.tags.add(tag)
+        return response
 
 
 class PostDelete(UserPassesTestMixin, DeleteView):
@@ -151,13 +163,11 @@ delete = PostDelete.as_view()
 
 def category_search(request, slug):
     category = Category.objects.get(slug=slug)
-    categories = Category.objects.all().order_by('-name')
     context = {
         'post_list': Post.objects.filter(category=category).order_by('-pk'),
-        'categories': categories,
         'no_category_post_count': Post.objects.filter(category=None).count(),
         'category': category,
-        'category_list': Category.objects.all().order_by('-name'),
+        'category_list': Category.objects.all().order_by('name'),
     }
     return render(request, 'blog/post_list.html', context)
 
@@ -165,12 +175,10 @@ def category_search(request, slug):
 def tag_search(request, slug):
     tag = Tag.objects.get(slug=slug)
     post_list = tag.post_set.all()
-    categories = Category.objects.all().order_by('-name')
     context = {
         'post_list': post_list,
-        'categories': categories,
         'no_category_post_count': Post.objects.filter(category=None).count(),
         'tag': tag,
-        'category_list': Category.objects.all().order_by('-name'),
+        'category_list': Category.objects.all().order_by('name'),
     }
     return render(request, 'blog/post_list.html', context)

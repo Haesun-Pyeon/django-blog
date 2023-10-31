@@ -14,9 +14,10 @@
         {% csrf_token %}
         {{ form.media }}
         {% bootstrap_form form %}
-        <label for="id_tags">Tags:</label>
-        <input type="text" name="tags_str" id="id_tags_str">
-        <button type="submit" id="submitbtn" class='btn btn-primary'>작성</button>
+        <label for="id_tags">추가할 태그: </label>
+        <input type="text" name="tags_str" id="id_tags_str" placeholder="콤마로 구분해주세요.">
+        <hr>
+        <button type="submit" id="submitbtn" class='btn btn-primary'>완료</button>
     </form>
     <script>
         CKEDITOR.on( 'dialogDefinition', function( ev ){

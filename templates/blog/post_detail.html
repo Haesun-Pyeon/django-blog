@@ -23,7 +23,7 @@
     <p>{{ post.created_at }}</p>
     <p>by {{ post.author }}</p>
     <p>조회수: {{ post.view_count }}</p>
-    <p>태그들: 
+    <p>
         {% for t in post.tags.all %}
         <a href="{% url 'tag' t.slug %}">#{{t.name}}</a>
         {% endfor %}
@@ -78,8 +78,8 @@
     {% if user.is_authenticated %}
     <form id="comment-form" action="{{post.get_absolute_url}}comment-new/" method="post">
         {% csrf_token %}
-        {{comment_form.as_p}}
-        <button type="submit" class='btn btn-primary'>작성</button>
+        {% bootstrap_form comment_form %}
+        <button type="submit" class='btn btn-primary'>댓글작성</button>
     </form>
     {% endif %}
 
