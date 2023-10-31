@@ -13,7 +13,8 @@ class Post(models.Model):
     category = models.ForeignKey(
         'Category', null=True, blank=True, on_delete=models.SET_NULL, related_name='posts')
     tags = models.ManyToManyField('Tag', blank=True)
-    # like_users 게시글 좋아요 누른사람 manytomany
+    like = models.ManyToManyField(
+        'accounts.User', related_name='post_likes', blank=True)
 
     def __str__(self):
         return f'[{self.pk}] {self.title} :: {self.author}'
@@ -67,7 +68,9 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
-    # like_users 댓글 좋아요 누른사람 manytomany, parent_comment_id 대댓글 셀프일대다
+    like = models.ManyToManyField(
+        'accounts.User', related_name='comment_likes', blank=True)
+    # parent_comment_id 대댓글 셀프일대다
 
     def __str__(self):
         return f'[{self.post}] {self.content} :: {self.author}'

@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://kit.fontawesome.com/67cab5a85c.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <h1>detail</h1>
@@ -19,6 +20,10 @@
     </nav>
     <main id="main">
     <p>{{ post.title }}</p>
+    <div class='like'>
+        <i id='heart-post' onclick='sendRequest({{ post.id }}, true)' class="{% if user in post.like.all %} fa-solid {% else %} fa-regular {% endif %} fa-heart"></i>
+        <span id='like-count'>{{ post.like.count }}</span>
+    </div>
     <p>{{ post.content | safe }}</p>
     <p>{{ post.created_at }}</p>
     <p>by {{ post.author }}</p>
@@ -70,6 +75,12 @@
             <a role="button" href="/blog/comment-edit/{{comment.pk}}">수정</a>
             <a role="button" href="/blog/comment-del/{{comment.pk}}">삭제</a>
             {% endif %}
+
+            <div class='like'>
+                <i id='heart-comment-{{ comment.id }}' onclick='sendRequest({{ comment.id }}, false)' class="{% if user in comment.like.all %} fa-solid {% else %} fa-regular {% endif %} fa-heart"></i>
+                <span id='like-count-{{ comment.id }}'>{{ comment.like.count }}</span>
+            </div>
+        
             <hr>
         {% endfor %}
     {% else %}
@@ -85,6 +96,36 @@
 
     <button class='btn btn-primary' onclick="location.href='{% url 'post_list' %}'">목록</button>
 
+    <script>
+        function sendRequest(id, isPost) {
+            const httpRequest = new XMLHttpRequest();
+            httpRequest.onreadystatechange = function(){
+                if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200){
+                    const jsonResponse = JSON.parse(httpRequest.responseText);
+                    if (isPost){
+                        document.querySelector('#like-count').innerHTML = jsonResponse['likeCount'];
+                        var $heart = document.querySelector('#heart-post')
+                    } else {
+                        document.querySelector('#like-count-'+id).innerHTML = jsonResponse['likeCount'];
+                        var $heart = document.querySelector('#heart-comment-'+id)
+                    }
+                    if (jsonResponse['isLikeNow']) {
+                        $heart.classList.remove("fa-regular");
+                        $heart.classList.add("fa-solid");
+                    } else {
+                        $heart.classList.add("fa-regular");
+                        $heart.classList.remove("fa-solid");                        
+                    }
+                }
+            };
+            if (isPost){
+                httpRequest.open('GET', "{% url 'post_like' post.id %}", true);
+            } else {
+                httpRequest.open('GET', "/blog/comment-like/"+id, true);
+            }
+            httpRequest.send();
+        }
+    </script>
     </main>
 </body>
 </html>

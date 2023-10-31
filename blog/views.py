@@ -1,6 +1,6 @@
 # blog/views.py
 from django.shortcuts import render, redirect
-from django.http.response import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
@@ -9,6 +9,7 @@ from .forms import PostForm, CommentForm
 from django.utils.text import slugify
 from django.db.models import Q
 from django.urls import reverse_lazy
+import json
 
 
 class PostList(ListView):
@@ -116,7 +117,7 @@ def comment_new(request, pk):
             return redirect(comment.get_absolute_url())
         else:
             form = CommentForm()
-        return render(request, 'blog/comment_form.html', {'form': form, 'is_write': True})
+        return render(request, 'blog/comment_form.html', {'form': form})
 
 
 @login_required
@@ -132,7 +133,7 @@ def comment_edit(request, pk):
 
     else:
         form = CommentForm(instance=comment)
-        return render(request, 'blog/comment_form.html', {'form': form, 'is_write': False})
+        return render(request, 'blog/comment_form.html', {'form': form})
 
 # class CommentUpdate(UserPassesTestMixin, UpdateView):
 #     model = Comment
@@ -182,3 +183,31 @@ def tag_search(request, slug):
         'category_list': Category.objects.all().order_by('name'),
     }
     return render(request, 'blog/post_list.html', context)
+
+
+@login_required
+def post_like(request, id):
+    post = Post.objects.get(id=id)
+    user = request.user
+    if user in post.like.all():
+        post.like.remove(user)
+        is_like_now = False
+    else:
+        post.like.add(user)
+        is_like_now = True
+    context = {'likeCount': post.like.count(), 'isLikeNow': is_like_now}
+    return JsonResponse(context)
+
+
+@login_required
+def comment_like(request, id):
+    comment = Comment.objects.get(id=id)
+    user = request.user
+    if user in comment.like.all():
+        comment.like.remove(user)
+        is_like_now = False
+    else:
+        comment.like.add(user)
+        is_like_now = True
+    context = {'likeCount': comment.like.count(), 'isLikeNow': is_like_now}
+    return JsonResponse(context)

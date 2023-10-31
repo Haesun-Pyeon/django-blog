@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'ckeditor',
     'ckeditor_uploader',
+    'django_cleanup.apps.CleanupConfig',
     # Project Apps
     'main',
     'blog',
