@@ -1,17 +1,12 @@
 from django.db import models
+from ckeditor_uploader.fields import RichTextUploadingField
 
 
 class Post(models.Model):
     author = models.ForeignKey(
         'accounts.User', on_delete=models.CASCADE, related_name='posts')
     title = models.CharField(max_length=100)
-    content = models.TextField()
-    head_image = models.ImageField(
-        upload_to='blog/images/%Y/%m/%d/', blank=True)
-    # pictures 이미지 리스트로 변경? 게시글에 이미지 여러개 올리는거로
-    file_upload = models.FileField(
-        upload_to='blog/files/%Y/%m/%d/', blank=True)
-    # 파일 업로드 냅둘지 말지??
+    content = RichTextUploadingField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
     view_count = models.PositiveIntegerField(default=0)
@@ -37,8 +32,6 @@ class Category(models.Model):
     name = models.CharField(max_length=25, unique=True)
     slug = models.SlugField(max_length=200, db_index=True,
                             unique=True, allow_unicode=True)
-    description = models.TextField()
-    is_public = models.BooleanField(default=True)  # 이게 필요한가??
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
@@ -56,7 +49,6 @@ class Tag(models.Model):
     name = models.CharField(max_length=25, unique=True)
     slug = models.SlugField(max_length=200, db_index=True,
                             unique=True, allow_unicode=True)
-    is_public = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 

@@ -1,17 +1,12 @@
 {% load django_bootstrap5 %}
-{% load markdown_deux_tags %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-    <!-- fontawesome cdn -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- Toast Editor -->
-    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.min.css" />
 </head>
 <body>
     <h1>detail</h1>
@@ -24,39 +19,7 @@
     </nav>
     <main id="main">
     <p>{{ post.title }}</p>
-    <p>{{ post.content | markdown }}</p>
-    <div id='viewer'></div>
-    {% if post.head_image %}
-    <img src="{{ post.head_image.url }}" alt="" srcset="" style='width: 100%;'>
-    {% endif %}
-    {% if post.file_upload %}
-    Download:
-    <a href="{{ post.file_upload.url }}" alt="" srcset="">
-        {% if post.get_file_ext == 'csv' %}
-            <i class="fas fa-file-csv"></i>
-        {% elif post.get_file_ext == 'pdf' %}
-            <i class="fas fa-file-pdf"></i>
-        {% elif post.get_file_ext == 'zip' %}
-            <i class="fas fa-file-archive"></i>
-        {% elif post.get_file_ext == 'jpg' %}
-            <i class="fas fa-file-image"></i>
-        {% elif post.get_file_ext == 'png' %}
-            <i class="fas fa-file-image"></i>
-        {% elif post.get_file_ext == 'docx' or post.get_file_ext == 'doc' %}
-            <i class="fas fa-file-word"></i>
-        {% elif post.get_file_ext == 'pptx' or post.get_file_ext == 'ppt' %}
-            <i class="fas fa-file-powerpoint"></i>
-        {% elif post.get_file_ext == 'xls' %}
-            <i class="fas fa-file-excel"></i>
-        {% elif post.get_file_ext == 'mp3' %}
-            <i class="fas fa-file-audio"></i>
-        {% elif post.get_file_ext == 'mp4' %}
-            <i class="fas fa-file-video"></i>
-        {% else %}
-            <i class="fas fa-file"></i>
-        {% endif %}
-        {{ post.file_upload.name }}</a>
-    {% endif %}
+    <p>{{ post.content | safe }}</p>
     <p>{{ post.created_at }}</p>
     <p>by {{ post.author }}</p>
     <p>조회수: {{ post.view_count }}</p>
@@ -123,12 +86,5 @@
     <button class='btn btn-primary' onclick="location.href='{% url 'post_list' %}'">목록</button>
 
     </main>
-    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.js">
-        const viewer = new Viewer({
-            el: document.querySelector('#viewer'),
-            height: '600px',
-            initialValue: '# hello'
-        });
-    </script>
 </body>
 </html>

@@ -52,7 +52,7 @@ class PostDetail(DetailView):
 
 class PostCreate(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content', 'head_image', 'file_upload', 'category']
+    fields = ['title', 'content', 'category']
 
     def form_valid(self, form):
         current_user = self.request.user
@@ -77,8 +77,7 @@ class PostCreate(LoginRequiredMixin, CreateView):
 
 class PostUpdate(UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content', 'head_image',
-              'file_upload', 'category', 'tags']
+    fields = ['title', 'content', 'category', 'tags']
 
     def test_func(self):
         return self.get_object().author == self.request.user

@@ -8,46 +8,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!-- Toast Editor -->
-    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
-    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 </head>
 <body>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        {{ form.media }}
         {% bootstrap_form form %}
-        <table class="table">
-            <tr>
-                <th><label for="id_tags">Tags:</label></th>
-                <td><input type="text" name="tags_str" id="id_tags_str"></td>
-            </tr>
-            <tr>
-                <th><label for="id_content_editor">Content_editor:</label></th>
-                <td><div id="editor"></div></td>
-            </tr>
-        </table>
+        <label for="id_tags">Tags:</label>
+        <input type="text" name="tags_str" id="id_tags_str">
         <button type="submit" id="submitbtn" class='btn btn-primary'>작성</button>
     </form>
     <script>
-        const $content = document.querySelector('#id_content')
-        document.querySelector('label[for="id_content"]').style.display = "none";
-        $content.style.display = "none";
-        
-        const Editor = toastui.Editor;
-
-        const editor = new Editor({
-            el: document.querySelector("#editor"),
-            height: "600px",
-            initialEditType: "markdown",
-            initialValue: $content.innerText,
-            previewStyle: "vertical",
-        });
-
-        // editor.getHTML()
-        // editor.getMarkdown()
-        document.getElementById('submitbtn').addEventListener('click', function(){
-            const markdownContent = editor.getMarkdown();
-            $content.value = markdownContent;
+        CKEDITOR.on( 'dialogDefinition', function( ev ){
+            var dialogName = ev.data.name;
+            var dialog = ev.data.definition.dialog;
+            var dialogDefinition = ev.data.definition;
+            if ( dialogName == 'image' ){
+                dialog.on('show', function (obj) {
+                    this.selectPage('Upload'); // 바로 업로드탭으로 가도록
+                });
+                dialogDefinition.removeContents( 'Link' ); // 링크 탭 제거
+                dialogDefinition.removeContents( 'advanced' ); // 상세정보 탭 제거
+                
+                var infoTab = dialogDefinition.getContents( 'info' );
+                infoTab.remove( 'txtAlt'); // 대체 문자열 제거
+            }
         });
     </script>
 </body>
