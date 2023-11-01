@@ -70,13 +70,12 @@ class Comment(models.Model):
     updated_at = models.DateField(auto_now=True)
     like = models.ManyToManyField(
         'accounts.User', related_name='comment_likes', blank=True)
-    # parent_comment_id 대댓글 셀프일대다
 
     def __str__(self):
         return f'[{self.post}] {self.content} :: {self.author}'
 
     def get_absolute_url(self):
-        return f'/blog/{self.post.pk}/#comment-{self.pk}'
+        return f'/blog/{self.post.pk}/'
 
     class Meta:
         ordering = ['id']

@@ -1,8 +1,8 @@
 # blog/views.py
 from .models import Post, Category, Tag, Comment
 from .forms import PostForm, CommentForm
+from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.utils.text import slugify
@@ -109,54 +109,36 @@ class PostDelete(UserPassesTestMixin, DeleteView):
         return super().form_valid(form)
 
 
-@login_required
-def comment_new(request, pk):
-    post = Post.objects.get(pk=pk)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-            comment.save()
-            return redirect(comment.get_absolute_url())
-        else:
-            form = CommentForm()
-        return render(request, 'blog/comment_form.html', {'form': form})
+class CommentCreate(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+
+    def form_valid(self, form):
+        post = Post.objects.get(pk=self.kwargs.get('post'))
+        comment_form = form.save(commit=False)
+        comment_form.author = self.request.user
+        comment_form.post = post
+        comment_form.save()
+        return super().form_valid(form)
 
 
-@login_required
-def comment_edit(request, pk):
-    comment = Comment.objects.get(pk=pk)
-    if request.method == 'POST':
-        form = CommentForm(request.POST, instance=comment)
-        if form.is_valid() and comment.author == request.user:
-            form.save()
-            return redirect(comment.post.get_absolute_url())
-        else:
-            return HttpResponse('You are not allowed to edit this comment')
+class CommentUpdate(UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
 
-    else:
-        form = CommentForm(instance=comment)
-        return render(request, 'blog/comment_form.html', {'form': form})
-
-# class CommentUpdate(UserPassesTestMixin, UpdateView):
-#     model = Comment
-#     form_class = CommentForm
-#     extra_context = {'is_write': False}
-
-#     def test_func(self):
-#         return self.get_object().author == self.request.user
+    def test_func(self):
+        return self.get_object().author == self.request.user
 
 
-@login_required
-def comment_del(request, pk):
-    comment = Comment.objects.get(pk=pk)
-    if comment.author == request.user:
-        comment.delete()
-        return redirect(comment.post.get_absolute_url())
-    else:
-        return HttpResponse('You are not allowed to delete this comment')
+class CommentDelete(UserPassesTestMixin, DeleteView):
+    model = Comment
+
+    def test_func(self):
+        return self.get_object().author == self.request.user
+
+    def get_success_url(self):
+        post = self.get_object().post
+        return reverse_lazy('post_detail', kwargs={'pk': post.pk})
 
 
 post_list = PostList.as_view()
@@ -164,7 +146,9 @@ post_detail = PostDetail.as_view()
 write = PostCreate.as_view()
 edit = PostUpdate.as_view()
 delete = PostDelete.as_view()
-# comment_edit = CommentUpdate.as_view()
+comment_new = CommentCreate.as_view()
+comment_edit = CommentUpdate.as_view()
+comment_del = CommentDelete.as_view()
 
 
 def category_search(request, slug):

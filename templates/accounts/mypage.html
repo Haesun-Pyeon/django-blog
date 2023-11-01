@@ -14,7 +14,25 @@
 {% if user.introduce %}
 <p>간단한 소개: {{ user.introduce | linebreaks }}</p>
 {% endif %}
+<hr>
+<h2>내가 쓴 글</h2>
+{% if user.posts.all %}
+{% for post in user.posts.all %}
+<a href="{% url 'post_detail' post.id %}">{{post.title}}</a><br>
+{% endfor %}
+{% else %}
+<p>내가 쓴 글이 없습니다.</p>
+{% endif %}
 
+<h2>내가 쓴 댓글</h2>
+{% if user.comments.all %}
+{% for comment in user.comments.all %}
+<a href="{% url 'post_detail' comment.post.id %}">{{comment.content | truncatechars:10 }}</a><br>
+{% endfor %}
+{% else %}
+<p>내가 쓴 댓글이 없습니다.</p>
+{% endif %}
+<hr>
 <h2>좋아요 누른 글</h2>
 {% if user.post_likes.all %}
 {% for likes in user.post_likes.all %}

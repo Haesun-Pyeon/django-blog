@@ -10,8 +10,8 @@
 <form action="" method="post" enctype='multipart/form-data'>
     {% csrf_token %}
     {% bootstrap_form form %}
-    <input type="submit" value="수정" class="btn btn-primary">
+    <button type="submit" class='btn btn-primary'>완료</button>
+    <button type='button' onclick="history.back();" class="btn btn-secondary">취소</button>
 </form>
-<button onclick="history.back();" class="btn btn-secondary">취소</button>
 
 {% endblock content %}

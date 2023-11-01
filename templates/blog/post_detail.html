@@ -13,7 +13,7 @@
     <main id="main">
     <p>{{ post.title }}</p>
     <div class='like'>
-        <i id='heart-post' onclick='sendRequest({{ post.id }}, true)' class="{% if user in post.like.all %} fa-solid {% else %} fa-regular {% endif %} fa-heart"></i>
+        <i id='heart-post' onclick='sendLikeRequest({{ post.id }}, true)' class="{% if user in post.like.all %} fa-solid {% else %} fa-regular {% endif %} fa-heart"></i>
         <span id='like-count'>{{ post.like.count }}</span>
     </div>
     <p>{{ post.content | safe }}</p>
@@ -64,12 +64,24 @@
             <p>{{ comment.created_at }}</p>
             <p>by {{ comment.author }}</p>
             {% if user.is_authenticated and comment.author == user %}
-            <a role="button" href="/blog/comment-edit/{{comment.pk}}">수정</a>
-            <a role="button" href="/blog/comment-del/{{comment.pk}}">삭제</a>
+            <form id='del' action="{% url 'comment_del' comment.pk %}" method="post">
+                {% csrf_token %}
+                <a href="javascript:showEdit({{comment.pk}}, '{{ comment.content }}');">수정</a>
+                <a href="javascript:document.querySelector('#del').submit();">삭제</a>
+            </form>
             {% endif %}
 
+            <div id="comment-form-{{comment.pk}}", style='display:none;'>
+                <form action="{% url 'comment_edit' comment.pk %}" method="post">
+                    {% csrf_token %}
+                    {% bootstrap_form comment_form %}
+                    <button type="submit" class='btn btn-primary'>완료</button>
+                    <button type="button" onclick='hideEdit({{ comment.pk }});' class='btn btn-secondary'>닫기</button>
+                </form>
+            </div>
+
             <div class='like'>
-                <i id='heart-comment-{{ comment.id }}' onclick='sendRequest({{ comment.id }}, false)' class="{% if user in comment.like.all %} fa-solid {% else %} fa-regular {% endif %} fa-heart"></i>
+                <i id='heart-comment-{{ comment.id }}' onclick='sendLikeRequest({{ comment.id }}, false)' class="{% if user in comment.like.all %} fa-solid {% else %} fa-regular {% endif %} fa-heart"></i>
                 <span id='like-count-{{ comment.id }}'>{{ comment.like.count }}</span>
             </div>
         
@@ -89,7 +101,7 @@
     <button class='btn btn-primary' onclick="location.href='{% url 'post_list' %}'">목록</button>
 
     <script>
-        function sendRequest(id, isPost) {
+        function sendLikeRequest(id, isPost) {
             const httpRequest = new XMLHttpRequest();
             httpRequest.onreadystatechange = function(){
                 if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200){
@@ -116,6 +128,17 @@
                 httpRequest.open('GET', "/blog/comment-like/"+id, true);
             }
             httpRequest.send();
+        }
+
+        function showEdit(id, content){
+            const $form = document.querySelector('#comment-form-'+id)
+            $form.style.display = 'block'
+            $form.querySelector('.form-control').innerText = content
+        }
+
+        function hideEdit(id){
+            const $form = document.querySelector('#comment-form-'+id)
+            $form.style.display = 'none'
         }
     </script>
     </main>
