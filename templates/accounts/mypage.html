@@ -1,16 +1,22 @@
+{% extends "message.html" %}
+<!--상속끝나면 삭제해도됨 (3개)-->
 {% load django_bootstrap5 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 
+{% block title %}
 <h1>마이페이지</h1>
-<p>{{ user.username }}</p>
-<p>{{ user.email }}</p>
-<p>{{ user.nickname }}</p>
+{% endblock title %}
+
+{% block content %}
+<p>사용자 이름: {{ user.username }}</p>
+<p>이메일: {{ user.email }}</p>
+<p>닉네임: {{ user.nickname }}</p>
 {% if user.profile_img %}
 <img src='{{ user.profile_img.url }}' style='width:50%;'>
 {% endif %}
 {% if user.introduce %}
-<p>{{ user.introduce }}</p>
+<p>간단한 소개: {{ user.introduce | linebreaks }}</p>
 {% endif %}
 
 <h2>좋아요 누른 글</h2>
@@ -25,7 +31,7 @@
 <h2>좋아요 누른 댓글</h2>
 {% if user.comment_likes.all %}
 {% for likes in user.comment_likes.all %}
-<a href="{% url 'post_detail' likes.post.id %}">{{likes.content}}</a><br>
+<a href="{% url 'post_detail' likes.post.id %}">{{likes.content | truncatechars:10 }}</a><br>
 {% endfor %}
 {% else %}
 <p>좋아요를 누른 댓글이 없습니다.</p>
@@ -35,4 +41,33 @@
 <button class='btn btn-primary' onclick="location.href='{% url 'index' %}'">메인페이지</button>
 <button class='btn btn-primary' onclick="location.href='{% url 'post_list' %}'">글보러가기</button>
 <button class='btn btn-primary' onclick="location.href='{% url 'logout' %}'">로그아웃</button>
+<button class='btn btn-primary' onclick="location.href='{% url 'user_edit' %}'">수정</button>
 
+    <!-- Button that opens a modal -->
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete_item">
+        탈퇴
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="delete_item" data-bs-backdrop="static"
+        data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete_item_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="delete_item_label">회원 탈퇴</h5>
+            </div>
+
+            <form action="{% url 'user_delete' user.id %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>정말로 탈퇴하시겠습니까?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="submit" class="btn btn-danger" value="Confirm">탈퇴</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

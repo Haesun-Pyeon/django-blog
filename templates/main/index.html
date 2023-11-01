@@ -1,8 +1,14 @@
+{% extends "message.html" %}
+<!--상속끝나면 삭제해도됨 (3개)-->
 {% load django_bootstrap5 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 
-<h1>Home</h1>
+{% block title %}
+<h1>HOME</h1>
+{% endblock title %}
+
+{% block content %}
 <button class='btn btn-primary' onclick="location.href='{% url 'post_list' %}'">들어가기</button>
 <button class='btn btn-primary' onclick="location.href='{% url 'about' %}'">about</button>
 <button class='btn btn-primary' onclick="location.href='{% url 'contact' %}'">contact</button>
@@ -14,5 +20,5 @@
 {% else %}
 <button class='btn btn-primary' onclick="location.href='{% url 'login' %}'">로그인</button>
 <button class='btn btn-primary' onclick="location.href='{% url 'register' %}'">회원가입</button>
-
 {% endif %}
+{% endblock content %}

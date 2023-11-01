@@ -1,0 +1,11 @@
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<h1>회원 탈퇴</h1>
+
+<form action="" method="post" enctype='multipart/form-data'>
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <input type="submit" value="확인" class="btn btn-primary">
+</form>
+<button onclick="history.back();" class="btn btn-secondary">취소</button>
