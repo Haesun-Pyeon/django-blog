@@ -1,24 +1,12 @@
-{% load django_bootstrap5 %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog</title>
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-</head>
-<body>
-    <h1>blog</h1>
+{% extends "base.html" %}
+
+{% block title %}
+<h1>게시글 목록</h1>
+{% endblock title %}
+
+{% block content %}
     <input type="text" name="q" id="search-input">
     <button id="search-btn">검색</button>
-    <nav>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">About</a></li>
-        </ul>
-    </nav>
     <main id="main">
         {% if category %}
         <h2>카테고리: {{ category }}</h2>
@@ -61,5 +49,4 @@
             location.href = `/blog/?q=${$searchValue}`;
         });
     </script>
-</body>
-</html>
+{% endblock content %}

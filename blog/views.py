@@ -1,15 +1,15 @@
 # blog/views.py
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.decorators import login_required
 from .models import Post, Category, Tag, Comment
 from .forms import PostForm, CommentForm
-from django.utils.text import slugify
-from django.db.models import Q
 from django.urls import reverse_lazy
-import json
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
+from django.db.models import Q
+from django.utils.text import slugify
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 
 class PostList(ListView):
@@ -93,6 +93,7 @@ class PostUpdate(UserPassesTestMixin, UpdateView):
                     tag.slug = slugify(t, allow_unicode=True)
                     tag.save()
                 self.object.tags.add(tag)
+        messages.success(self.request, '글 수정을 완료했습니다.')
         return response
 
 
@@ -102,6 +103,10 @@ class PostDelete(UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return self.get_object().author == self.request.user
+
+    def form_valid(self, form):
+        messages.success(self.request, '글 삭제를 완료했습니다.')
+        return super().form_valid(form)
 
 
 @login_required
