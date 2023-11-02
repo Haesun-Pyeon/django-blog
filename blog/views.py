@@ -19,8 +19,6 @@ class PostList(ListView):
     def get_context_data(self, **kwargs):
         context = super(PostList, self).get_context_data(**kwargs)
         context['category_list'] = Category.objects.all().order_by('name')
-        context['no_category_post_count'] = Post.objects.filter(
-            category=None).count()
         return context
 
     def get_queryset(self):
@@ -155,7 +153,6 @@ def category_search(request, slug):
     category = Category.objects.get(slug=slug)
     context = {
         'post_list': Post.objects.filter(category=category).order_by('-pk'),
-        'no_category_post_count': Post.objects.filter(category=None).count(),
         'category': category,
         'category_list': Category.objects.all().order_by('name'),
     }
@@ -167,7 +164,6 @@ def tag_search(request, slug):
     post_list = tag.post_set.all()
     context = {
         'post_list': post_list,
-        'no_category_post_count': Post.objects.filter(category=None).count(),
         'tag': tag,
         'category_list': Category.objects.all().order_by('name'),
     }

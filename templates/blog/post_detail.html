@@ -91,7 +91,7 @@
         <p>아직 댓글이 없습니다.</p>
     {% endif %}
     {% if user.is_authenticated %}
-    <form id="comment-form" action="{{post.get_absolute_url}}comment-new/" method="post">
+    <form id="comment-form" action="{% url 'comment_new' post.id %}" method="post">
         {% csrf_token %}
         {% bootstrap_form comment_form %}
         <button type="submit" class='btn btn-primary'>댓글작성</button>
