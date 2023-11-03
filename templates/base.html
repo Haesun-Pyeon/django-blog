@@ -1,6 +1,7 @@
 {% load django_bootstrap5 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="ko-KR">
@@ -12,9 +13,60 @@
     {% endblock head %}
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">Hobby Space</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'post_list' %}">Posts</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Category</a>
+                    <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">category1</a></li>
+                    <li><a class="dropdown-item" href="#">category2</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">category3</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Info</a>
+                    <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{% url 'about' %}">About</a></li>
+                    <li><a class="dropdown-item" href="{% url 'contact' %}">Contact</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    {% if user.is_authenticated %}
+                    <a class="nav-link active" aria-current="page" href="{% url 'mypage' %}">마이페이지</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">로그아웃</a>
+                    {% else %}
+                    <a class="nav-link active" aria-current="page" href="{% url 'login' %}">로그인</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'register' %}">회원가입</a>
+                    {% endif %}
+                </li>
+                </ul>
+                <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
     
+
     {% block title %}
     {% endblock title %}
+    <!--title 지울까?-->
     
     <!-- Message 띄우기 -->
     {% if messages %}
@@ -32,19 +84,6 @@
     </div>
     {% endif %}
     
-    <!-- Navigation Bar -->
-    <strong>nav bar </strong>
-    <nav>
-        <ul>
-            <li><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="{% url 'post_list' %}">Blog</a></li>
-            <li><a href="{% url 'about' %}">About</a></li>
-            {% if user.is_authenticated %}
-            <li><a href="{% url 'mypage' %}">MyPage</a></li>
-            {% endif %}
-        </ul>
-    </nav>
-
     {% block content %}
     {% endblock content %}
 </body>

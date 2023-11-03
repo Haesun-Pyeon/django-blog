@@ -1,20 +1,58 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load static %}
 
-{% block title %}
-<h1>
-    {% if is_register %}
-    회원가입
-    {% else %}
-    로그인
-    {% endif %}
-</h1>
-{% endblock title %}
+{% block head %}
+<style>
+    .btn-color{
+        background-color: #0e1c36;
+        color: #fff;
+    }  
+    .profile-image-pic{
+        height: 200px;
+        width: 200px;
+        object-fit: cover;
+    }
+    .cardbody-color{
+        background-color: #ebf2fa;
+    }
+    a{
+        text-decoration: none;
+    }
+</style>
+{% endblock head %}
 
 {% block content %}
-<form method="post" enctype='multipart/form-data'>
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    <input type="submit" value="{{ submit }}" class="btn btn-primary">
-</form>
+<div class="container">
+    <div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card my-5">
+        <form class="card-body cardbody-color p-lg-5 mb-0" method="post" enctype='multipart/form-data'>
+            {% csrf_token %}
+            <div class="text-center">
+                {% comment %} <img src={% static "images/profile.png" %}> {% endcomment %}
+            <img src="https://cdn.pixabay.com/photo/2016/03/31/19/56/avatar-1295397__340.png" class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
+                width="200px" alt="profile">
+            </div>
+            
+            {% bootstrap_form form %}
+            <div class="text-center">
+                <button type="submit" class="btn btn-color px-5 mb-3 w-100">{{ submit }}</button>
+                {% if is_edit %}
+                <button type='button' onclick="history.back();" class="btn btn-outline-dark px-5 mb-2 w-100">취소</button>
+                {% endif %}
+            </div>
+            {% if is_login %}
+            <div id="emailHelp" class="form-text text-center mb-5 text-dark">아직 회원이 아니신가요? <a href="{% url 'register' %}" class="text-dark fw-bold">회원가입</a> 하기
+            {% endif %}
+            </div>
+        </form>
+        </div>
+    </div>
+    <p>Copyright (c) 2023 - dvrrajashekhar - <a href='https://codepen.io/rajashekhar90/pen/XWNaapG'>https://codepen.io/rajashekhar90/pen/XWNaapG</a>
+    </p>
+    </div>
+</div>
 {% endblock content %}

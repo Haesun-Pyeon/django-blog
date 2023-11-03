@@ -11,7 +11,7 @@ from django.views.generic import CreateView, TemplateView, UpdateView, DeleteVie
 
 login = LoginView.as_view(
     template_name='accounts/form.html',
-    extra_context={'is_register': False, 'submit': '로그인', }
+    extra_context={'is_login': True, 'submit': '로그인', }
 )
 
 logout = LogoutView.as_view(
@@ -23,11 +23,12 @@ class UserCreateView(CreateView):
     form_class = RegisterForm
     template_name = 'accounts/form.html'
     success_url = reverse_lazy('mypage')
-    extra_context = {'is_register': True, 'submit': '회원가입', }
+    extra_context = {'submit': '회원가입', }
 
     def form_valid(self, form):
         response = super().form_valid(form)
         auth_login(self.request, self.object)
+        messages.success(self.request, '회원가입이 완료되었습니다.')
         return response
 
 
@@ -38,7 +39,8 @@ class UserReadView(LoginRequiredMixin, TemplateView):
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     form_class = UserUpdateForm
     success_url = reverse_lazy('mypage')
-    template_name = 'accounts/update_form.html'
+    template_name = 'accounts/form.html'
+    extra_context = {'submit': '수정', 'is_edit': True, }
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -50,7 +52,8 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
 class PasswordUpdateView(LoginRequiredMixin, PasswordChangeView):
     success_url = reverse_lazy('user_edit')
-    template_name = 'accounts/update_form.html'
+    template_name = 'accounts/form.html'
+    extra_context = {'submit': '수정', 'is_edit': True, }
 
     def form_valid(self, form):
         messages.success(self.request, '비밀번호 변경을 완료했습니다.')
