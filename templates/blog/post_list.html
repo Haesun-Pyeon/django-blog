@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
 
 {% block title %}
 <h1>게시글 목록</h1>
@@ -17,13 +19,19 @@
 
         {% if user.is_authenticated %}
         <button class='btn btn-primary' onclick="location.href='{% url 'post_write' %}'">글쓰기</button>
-        <button class='btn btn-primary' onclick="location.href='{% url 'mypage' %}'">마이페이지</button>
+        <button class='btn btn-primary' onclick="location.href='{{ user.get_absolute_url }}'">마이페이지</button>
 
         {% endif %}
-        
+        <hr>
         {% if post_list.exists %}
         {% for post in post_list %}
-        <a href="{% url 'post_detail' post.pk %}">
+        {% if post.head_image %}
+        <img src={{ post.head_image.url }} class="img-fluid img-thumbnail my-3" width="400px" alt="post">
+        {% else %}
+        <img src="{% static 'images/post.jpg' %}" class="img-fluid img-thumbnail my-3" width="400px" alt="post">
+        {% endif %}      
+
+        <a href="{{ post.get_absolute_url }}">
             <h2>{{ post.title }}</h2>
         </a>
             <p>{{ post.created_at }}</p>
@@ -38,7 +46,7 @@
         <h2>카테고리</h2>
         <ul>
             {% for category in category_list %}
-            <li><a href="{% url 'category' category.slug %}">{{ category.name }}</a> <span class="badge text-bg-secondary">{{ category.posts.count }}</span></li>
+            <li><a href="{{ category.get_absolute_url }}">{{ category.name }}</a> <span class="badge text-bg-secondary">{{ category.posts.count }}</span></li>
             {% endfor %}
         </ul>
     </aside>

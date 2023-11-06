@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
 
 {% block title %}
 <h1>Hobby Space</h1>
@@ -11,7 +13,7 @@
 <hr>
 {% if user.is_authenticated %}
 <p>{{ user }}님 안녕하세요!</p>
-<button class='btn btn-primary' onclick="location.href='{% url 'mypage' %}'">마이페이지</button>
+<button class='btn btn-primary' onclick="location.href='{{ user.get_absolute_url }}'">마이페이지</button>
 <button class='btn btn-primary' onclick="location.href='{% url 'logout' %}'">로그아웃</button>
 {% else %}
 <button class='btn btn-primary' onclick="location.href='{% url 'login' %}'">로그인</button>

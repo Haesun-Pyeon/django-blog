@@ -1,4 +1,5 @@
 # accounts/views.py
+from blog.models import Category
 from .forms import RegisterForm, UserUpdateForm
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -9,21 +10,30 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.views.generic import CreateView, TemplateView, UpdateView, DeleteView
 
 
-login = LoginView.as_view(
-    template_name='accounts/form.html',
-    extra_context={'is_login': True, 'submit': '로그인', }
-)
+class UserLoginView(LoginView):
+    template_name = 'accounts/form.html'
 
-logout = LogoutView.as_view(
-    next_page='/'
-)
+    def get_context_data(self, **kwargs):
+        context = super(UserLoginView, self).get_context_data(**kwargs)
+        context['category_list'] = Category.objects.all()
+        context['submit'] = '로그인'
+        context['is_login'] = True
+        return context
+
+
+class UserLogoutView(LogoutView):
+    next_page = '/'
 
 
 class UserCreateView(CreateView):
     form_class = RegisterForm
     template_name = 'accounts/form.html'
-    success_url = reverse_lazy('mypage')
-    extra_context = {'submit': '회원가입', }
+
+    def get_context_data(self, **kwargs):
+        context = super(UserCreateView, self).get_context_data(**kwargs)
+        context['category_list'] = Category.objects.all()
+        context['submit'] = '회원가입'
+        return context
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -35,15 +45,25 @@ class UserCreateView(CreateView):
 class UserReadView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/mypage.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(UserReadView, self).get_context_data(**kwargs)
+        context['category_list'] = Category.objects.all()
+        return context
+
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     form_class = UserUpdateForm
-    success_url = reverse_lazy('mypage')
     template_name = 'accounts/form.html'
-    extra_context = {'submit': '수정', 'is_edit': True, }
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super(UserUpdateView, self).get_context_data(**kwargs)
+        context['category_list'] = Category.objects.all()
+        context['submit'] = '수정'
+        context['is_edit'] = True
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, '회원정보 수정을 완료했습니다.')
@@ -51,9 +71,15 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class PasswordUpdateView(LoginRequiredMixin, PasswordChangeView):
-    success_url = reverse_lazy('user_edit')
     template_name = 'accounts/form.html'
-    extra_context = {'submit': '수정', 'is_edit': True, }
+    success_url = reverse_lazy('mypage')
+
+    def get_context_data(self, **kwargs):
+        context = super(PasswordUpdateView, self).get_context_data(**kwargs)
+        context['category_list'] = Category.objects.all()
+        context['submit'] = '수정'
+        context['is_edit'] = True
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, '비밀번호 변경을 완료했습니다.')
@@ -69,6 +95,8 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
         return super().form_valid(form)
 
 
+login = UserLoginView.as_view()
+logout = UserLogoutView.as_view()
 register = UserCreateView.as_view()
 mypage = UserReadView.as_view()
 user_edit = UserUpdateView.as_view()

@@ -9,3 +9,6 @@ class User(AbstractUser):
     profile_img = models.ImageField(
         upload_to='accounts/profile/', blank=True, null=True)
     introduce = models.TextField(max_length=500, null=True, blank=True)
+
+    def get_absolute_url(self):
+        return f'/accounts/mypage/'

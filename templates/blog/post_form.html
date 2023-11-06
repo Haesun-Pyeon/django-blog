@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
+{% load static %}
+
+{% block head %}
+<style>
+    .django-ckeditor-widget{
+        width: 99%; /*나중에수정*/
+    }
+</style>
+{% endblock head %}
 
 {% block title %}
 <h1>글 쓰기</h1>

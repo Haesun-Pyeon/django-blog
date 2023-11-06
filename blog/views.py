@@ -14,11 +14,10 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 
 class PostList(ListView):
     model = Post
-    ordering = '-pk'
 
     def get_context_data(self, **kwargs):
         context = super(PostList, self).get_context_data(**kwargs)
-        context['category_list'] = Category.objects.all().order_by('name')
+        context['category_list'] = Category.objects.all()
         return context
 
     def get_queryset(self):
@@ -36,6 +35,7 @@ class PostDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PostDetail, self).get_context_data(**kwargs)
         context['comment_form'] = CommentForm
+        context['category_list'] = Category.objects.all()
         return context
 
     def get_object(self, queryset=None):
@@ -49,6 +49,11 @@ class PostDetail(DetailView):
 class PostCreate(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
+
+    def get_context_data(self, **kwargs):
+        context = super(PostCreate, self).get_context_data(**kwargs)
+        context['category_list'] = Category.objects.all()
+        return context
 
     def form_valid(self, form):
         current_user = self.request.user
@@ -74,6 +79,11 @@ class PostCreate(LoginRequiredMixin, CreateView):
 class PostUpdate(UserPassesTestMixin, UpdateView):
     model = Post
     form_class = PostForm
+
+    def get_context_data(self, **kwargs):
+        context = super(PostUpdate, self).get_context_data(**kwargs)
+        context['category_list'] = Category.objects.all()
+        return context
 
     def test_func(self):
         return self.get_object().author == self.request.user
@@ -152,9 +162,9 @@ comment_del = CommentDelete.as_view()
 def category_search(request, slug):
     category = Category.objects.get(slug=slug)
     context = {
-        'post_list': Post.objects.filter(category=category).order_by('-pk'),
+        'post_list': Post.objects.filter(category=category),
         'category': category,
-        'category_list': Category.objects.all().order_by('name'),
+        'category_list': Category.objects.all(),
     }
     return render(request, 'blog/post_list.html', context)
 
@@ -165,7 +175,7 @@ def tag_search(request, slug):
     context = {
         'post_list': post_list,
         'tag': tag,
-        'category_list': Category.objects.all().order_by('name'),
+        'category_list': Category.objects.all(),
     }
     return render(request, 'blog/post_list.html', context)
 

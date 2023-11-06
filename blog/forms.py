@@ -6,15 +6,16 @@ from .models import Post, Comment
 class PostForm(forms.ModelForm):
     class Meta():
         model = Post
-        fields = ['title', 'content', 'category', 'tags']
+        fields = ['title', 'content', 'head_image', 'category', 'tags']
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': '제목'},),
         }
         labels = {
-            'title': '',
+            'title': '제목',
             'content': '',
-            'category': '',
-            'tags': '',
+            'head_image': '썸네일 사진',
+            'category': '카테고리',
+            'tags': '태그 선택',
         }
 
     def __init__(self, *args, **kwargs):

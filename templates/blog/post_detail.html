@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
+{% load static %}
 
 {% block head %}
 <script src="https://kit.fontawesome.com/67cab5a85c.js" crossorigin="anonymous"></script>
@@ -16,6 +17,13 @@
         <i id='heart-post' onclick='sendLikeRequest({{ post.id }}, true)' class="{% if user in post.like.all %} fa-solid {% else %} fa-regular {% endif %} fa-heart"></i>
         <span id='like-count'>{{ post.like.count }}</span>
     </div>
+    {% if post.head_image %}
+    <img src={{ post.head_image.url }} class="img-fluid img-thumbnail my-3" width="400px" alt="post">
+    {% else %}
+    <img src="{% static 'images/post.jpg' %}" class="img-fluid img-thumbnail my-3" width="400px" alt="post">
+    {% endif %}
+    {% comment %} detail에도 넣을지말지??? {% endcomment %}
+
     <p>{{ post.content | safe }}</p>
     <p>{{ post.created_at }}</p>
     <p>by {{ post.author }}</p>
