@@ -11,7 +11,7 @@ class PostForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'placeholder': '제목'},),
         }
         labels = {
-            'title': '제목',
+            'title': '',
             'content': '',
             'head_image': '썸네일 사진',
             'category': '카테고리',

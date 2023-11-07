@@ -81,7 +81,7 @@ class Comment(models.Model):
         'accounts.User', related_name='comment_likes', blank=True)
 
     class Meta:
-        ordering = ['created_at']
+        ordering = ['pk']
 
     def __str__(self):
         return f'[{self.post}] {self.content} :: {self.author}'

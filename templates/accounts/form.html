@@ -40,7 +40,7 @@
             <div class="text-center">
                 <button type="submit" class="btn btn-color px-5 mb-3 w-100">{{ submit }}</button>
                 {% if is_edit %}
-                <button type='button' onclick="history.back();" class="btn btn-outline-dark px-5 mb-2 w-100">취소</button>
+                <button type='button' onclick="history.back();" class="btn btn-outline-primary px-5 mb-2 w-100">취소</button>
                 {% endif %}
             </div>
             {% if is_login %}
@@ -50,8 +50,10 @@
         </form>
         </div>
     </div>
-    <p class="py-5 small text-center text-muted">Copyright (c) 2023 - dvrrajashekhar - <a href='https://codepen.io/rajashekhar90/pen/XWNaapG'>codepen</a>
-    </p>
-    </div>
+</div>
 </div>
 {% endblock content %}
+
+{% block footer %}
+<p class="text-center">form: Copyright (c) 2023 - dvrrajashekhar - <a href='https://codepen.io/rajashekhar90/pen/XWNaapG'>codepen</a></p>
+{% endblock footer %}

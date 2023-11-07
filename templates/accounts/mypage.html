@@ -2,90 +2,161 @@
 {% load django_bootstrap5 %}
 {% load static %}
 
-{% block title %}
-<h1>마이페이지</h1>
-{% endblock title %}
+{% block head %}
+<style>
+    .list-group{
+        max-height: 200px;
+        margin-bottom: 10px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+</style>
+{% endblock head %}
 
 {% block content %}
-{% if user.profile_img %}
-<img src={{ user.profile_img.url }} class="img-fluid img-thumbnail rounded-circle my-3" width="200px" alt="profile">
-{% else %}
-<img src="{% static 'images/profile.png' %}" class="img-fluid img-thumbnail rounded-circle my-3" width="200px" alt="profile">
-{% endif %}      
-<p>사용자 이름: {{ user.username }}</p>
-<p>이메일: {{ user.email }}</p>
-<p>닉네임: {{ user.nickname }}</p>
-{% if user.introduce %}
-<p>간단한 소개: {{ user.introduce | linebreaks }}</p>
-{% endif %}
-<hr>
-<h2>내가 쓴 글</h2>
-{% if user.posts.all %}
-{% for post in user.posts.all %}
-<a href="{{ post.get_absolute_url }}">{{post.title}}</a><br>
-{% endfor %}
-{% else %}
-<p>내가 쓴 글이 없습니다.</p>
-{% endif %}
-
-<h2>내가 쓴 댓글</h2>
-{% if user.comments.all %}
-{% for comment in user.comments.all %}
-<a href="{{ comment.get_absolute_url }}">{{comment.content | truncatechars:10 }}</a><br>
-{% endfor %}
-{% else %}
-<p>내가 쓴 댓글이 없습니다.</p>
-{% endif %}
-<hr>
-<h2>좋아요 누른 글</h2>
-{% if user.post_likes.all %}
-{% for like in user.post_likes.all %}
-<a href="{{ like.get_absolute_url }}">{{like.title}}</a><br>
-{% endfor %}
-{% else %}
-<p>좋아요를 누른 글이 없습니다.</p>
-{% endif %}
-
-<h2>좋아요 누른 댓글</h2>
-{% if user.comment_likes.all %}
-{% for like in user.comment_likes.all %}
-<a href="{{ like.get_absolute_url }}">{{like.content | truncatechars:10 }}</a><br>
-{% endfor %}
-{% else %}
-<p>좋아요를 누른 댓글이 없습니다.</p>
-{% endif %}
-
-<hr>
-<button class='btn btn-primary' onclick="location.href='{% url 'index' %}'">메인페이지</button>
-<button class='btn btn-primary' onclick="location.href='{% url 'post_list' %}'">글보러가기</button>
-<button class='btn btn-primary' onclick="location.href='{% url 'logout' %}'">로그아웃</button>
-<button class='btn btn-primary' onclick="location.href='{% url 'user_edit' %}'">수정</button>
-
-    <!-- Button that opens a modal -->
-    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete_item">
-        탈퇴
-    </button>
-
-    <!-- Modal -->
-    <div class="modal fade" id="delete_item" data-bs-backdrop="static"
-        data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete_item_label" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="delete_item_label">회원 탈퇴</h5>
-            </div>
-
-            <form action="{% url 'user_delete' user.id %}" method="post">
-                {% csrf_token %}
-                <div class="modal-body">
-                    <p>정말로 탈퇴하시겠습니까?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="submit" class="btn btn-danger" value="Confirm">탈퇴</button>
-                </div>
-            </form>
+<div class="container py-5">    
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class='row'>
+                <div class='col-md-4 mx-auto my-auto text-center'>
+                    {% if user.profile_img %}
+                    <img src={{ user.profile_img.url }} class="rounded-circle img-fluid" width="250px" alt="profile">
+                    {% else %}
+                    <img src="{% static 'images/profile.png' %}" class="rounded-circle img-fluid" width="250px" alt="profile">
+                    {% endif %}
+                </div>    
+                <div class='col-md-8'>
+                    <div class="row">
+                        <div class="col-sm-3">
+                        <p class="mb-0">사용자 이름</p>
+                        </div>
+                        <div class="col-sm-9">
+                        <p class="mb-0">{{ user.username }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                        <p class="mb-0">이메일</p>
+                        </div>
+                        <div class="col-sm-9">
+                        <p class="mb-0">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                        <p class="mb-0">닉네임</p>
+                        </div>
+                        <div class="col-sm-9">
+                        <p class="mb-0">{{ user.nickname }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                        <p class="mb-0">간단한 소개</p>
+                        </div>
+                        <div class="col-sm-9">
+                        {% if user.introduce %}
+                        <p class="mb-0">{{ user.introduce | linebreaks }}</p>
+                        {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class='col'>
+                        <button class='btn btn-primary' onclick="location.href='{% url 'user_edit' %}'">수정</button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete_item">탈퇴</button>
+                    </div>
+                </div>            
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+        <div class="card mb-4 mb-md-0 h-100">
+            <div class="card-body">
+            <p class="mb-4"><span class="text-primary font-italic me-1">내가 쓴 글</span></p>                
+            <div class="list-group list-group-flush">
+                {% for post in user.posts.all %}
+                <a href="{{ post.get_absolute_url }}" class="list-group-item list-group-item-action">{{ post.title | truncatechars:30 }}</a>
+                {% empty %}
+                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">내가 쓴 글이 없습니다.</a>
+                {% endfor %}    
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="col-md-6">
+        <div class="card mb-4 mb-md-0 h-100">
+            <div class="card-body">
+            <p class="mb-4"><span class="text-primary font-italic me-1">내가 좋아하는 글</span></p>
+            <div class="list-group list-group-flush">
+                {% for like in user.post_likes.all %}
+                <a href="{{ like.get_absolute_url }}" class="list-group-item list-group-item-action">{{ like.title | truncatechars:30 }}</a>
+                {% empty %}
+                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">내가 좋아한 글이 없습니다.</a>
+                {% endfor %}    
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+        <div class="card mb-4 mb-md-0 h-100">
+            <div class="card-body">
+            <p class="mb-4"><span class="text-primary font-italic me-1">내가 쓴 댓글</span></p>                
+            <div class="list-group list-group-flush">
+                {% for comment in comment_list %}
+                <a href="{{ comment.get_absolute_url }}" class="list-group-item list-group-item-action">{{ comment.content | truncatechars:30 }}</a>
+                {% empty %}
+                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">내가 쓴 댓글이 없습니다.</a>
+                {% endfor %}    
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="col-md-6">
+        <div class="card mb-4 mb-md-0 h-100">
+            <div class="card-body">
+            <p class="mb-4"><span class="text-primary font-italic me-1">내가 좋아하는 댓글</span></p>
+            <div class="list-group list-group-flush">
+                {% for like in comment_like_list %}
+                <a href="{{ like.get_absolute_url }}" class="list-group-item list-group-item-action">{{ like.content | truncatechars:30 }}</a>
+                {% empty %}
+                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">내가 좋아한 댓글이 없습니다.</a>
+                {% endfor %}    
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="delete_item" data-bs-backdrop="static"
+    data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete_item_label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="delete_item_label">회원 탈퇴</h5>
+        </div>
+
+        <form action="{% url 'user_delete' user.id %}" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>정말로 탈퇴하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="submit" class="btn btn-danger" value="Confirm">탈퇴</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}

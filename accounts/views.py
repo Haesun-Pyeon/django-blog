@@ -1,5 +1,5 @@
 # accounts/views.py
-from blog.models import Category
+from blog.models import Category, Comment
 from .forms import RegisterForm, UserUpdateForm
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -48,6 +48,10 @@ class UserReadView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(UserReadView, self).get_context_data(**kwargs)
         context['category_list'] = Category.objects.all()
+        context['comment_list'] = Comment.objects.filter(
+            author=self.request.user).order_by('-pk')
+        context['comment_like_list'] = Comment.objects.filter(
+            like=self.request.user).order_by('-pk')
         return context
 
 

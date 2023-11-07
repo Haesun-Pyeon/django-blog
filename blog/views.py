@@ -3,7 +3,7 @@ from .models import Post, Category, Tag, Comment
 from .forms import PostForm, CommentForm
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.db.models import Q
 from django.utils.text import slugify
 from django.contrib import messages
@@ -14,10 +14,19 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 
 class PostList(ListView):
     model = Post
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
-        context = super(PostList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['category_list'] = Category.objects.all()
+        context['tag_list'] = Tag.objects.all()
+        context['popular_list'] = Post.objects.all().order_by(
+            '-view_count')[:3]
+        context['page_url'] = '/blog/?page='
+        search_keyword = self.request.GET.get('q')
+        if search_keyword:
+            context['search'] = search_keyword
+            context['page_url'] = f'/blog/?q={search_keyword}&page='
         return context
 
     def get_queryset(self):
@@ -33,9 +42,12 @@ class PostDetail(DetailView):
     model = Post
 
     def get_context_data(self, **kwargs):
-        context = super(PostDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['comment_form'] = CommentForm
         context['category_list'] = Category.objects.all()
+        context['tag_list'] = Tag.objects.all()
+        context['popular_list'] = Post.objects.all().order_by(
+            '-view_count')[:5]
         return context
 
     def get_object(self, queryset=None):
@@ -51,7 +63,7 @@ class PostCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
 
     def get_context_data(self, **kwargs):
-        context = super(PostCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['category_list'] = Category.objects.all()
         return context
 
@@ -59,7 +71,7 @@ class PostCreate(LoginRequiredMixin, CreateView):
         current_user = self.request.user
         if current_user.is_authenticated:
             form.instance.author = current_user
-            response = super(PostCreate, self).form_valid(form)
+            response = super().form_valid(form)
             tags_str = self.request.POST.get('tags_str')
             if tags_str:
                 tags_str = tags_str.strip()
@@ -81,7 +93,7 @@ class PostUpdate(UserPassesTestMixin, UpdateView):
     form_class = PostForm
 
     def get_context_data(self, **kwargs):
-        context = super(PostUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['category_list'] = Category.objects.all()
         return context
 
@@ -89,7 +101,7 @@ class PostUpdate(UserPassesTestMixin, UpdateView):
         return self.get_object().author == self.request.user
 
     def form_valid(self, form):
-        response = super(PostUpdate, self).form_valid(form)
+        response = super().form_valid(form)
         tags_str = self.request.POST.get('tags_str')
         if tags_str:
             tags_str = tags_str.strip()
@@ -149,6 +161,50 @@ class CommentDelete(UserPassesTestMixin, DeleteView):
         return reverse_lazy('post_detail', kwargs={'pk': post.pk})
 
 
+class CategoryList(ListView):
+    model = Post
+    paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category = Category.objects.get(slug=self.kwargs.get('slug'))
+        context['category'] = category
+        context['category_list'] = Category.objects.all()
+        context['tag_list'] = Tag.objects.all()
+        context['popular_list'] = Post.objects.all().order_by(
+            '-view_count')[:3]
+        context['page_url'] = category.get_absolute_url()+'?page='
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category = Category.objects.get(slug=self.kwargs.get('slug'))
+        queryset = Post.objects.filter(category=category)
+        return queryset
+
+
+class TagList(ListView):
+    model = Post
+    paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag = Tag.objects.get(slug=self.kwargs.get('slug'))
+        context['tag'] = tag
+        context['category_list'] = Category.objects.all()
+        context['tag_list'] = Tag.objects.all()
+        context['popular_list'] = Post.objects.all().order_by(
+            '-view_count')[:3]
+        context['page_url'] = tag.get_absolute_url()+'?page='
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tag = Tag.objects.get(slug=self.kwargs.get('slug'))
+        queryset = tag.post_set.all()
+        return queryset
+
+
 post_list = PostList.as_view()
 post_detail = PostDetail.as_view()
 write = PostCreate.as_view()
@@ -157,27 +213,8 @@ delete = PostDelete.as_view()
 comment_new = CommentCreate.as_view()
 comment_edit = CommentUpdate.as_view()
 comment_del = CommentDelete.as_view()
-
-
-def category_search(request, slug):
-    category = Category.objects.get(slug=slug)
-    context = {
-        'post_list': Post.objects.filter(category=category),
-        'category': category,
-        'category_list': Category.objects.all(),
-    }
-    return render(request, 'blog/post_list.html', context)
-
-
-def tag_search(request, slug):
-    tag = Tag.objects.get(slug=slug)
-    post_list = tag.post_set.all()
-    context = {
-        'post_list': post_list,
-        'tag': tag,
-        'category_list': Category.objects.all(),
-    }
-    return render(request, 'blog/post_list.html', context)
+category_search = CategoryList.as_view()
+tag_search = TagList.as_view()
 
 
 @login_required
