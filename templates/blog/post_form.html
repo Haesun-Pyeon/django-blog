@@ -31,9 +31,9 @@
     </div> 
     <script>
         CKEDITOR.on( 'dialogDefinition', function( ev ){
-            var dialogName = ev.data.name;
-            var dialog = ev.data.definition.dialog;
-            var dialogDefinition = ev.data.definition;
+            const dialogName = ev.data.name;
+            const dialog = ev.data.definition.dialog;
+            const dialogDefinition = ev.data.definition;
             if ( dialogName == 'image' ){
                 dialog.on('show', function (obj) {
                     this.selectPage('Upload'); // 바로 업로드탭으로 가도록
@@ -41,7 +41,7 @@
                 dialogDefinition.removeContents( 'Link' ); // 링크 탭 제거
                 dialogDefinition.removeContents( 'advanced' ); // 상세정보 탭 제거
                 
-                var infoTab = dialogDefinition.getContents( 'info' );
+                const infoTab = dialogDefinition.getContents( 'info' );
                 infoTab.remove( 'txtAlt'); // 대체 문자열 제거
             }
         });
