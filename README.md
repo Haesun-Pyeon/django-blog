@@ -18,20 +18,18 @@
 
 ### 2-1. 사용한 기술스택
 
-<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
-<img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white">
-<img src="https://img.shields.io/badge/bootstrap5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
+<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"> <img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white"> <img src="https://img.shields.io/badge/bootstrap5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
 
 <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> <img src="https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white"> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
 
 ### 2-2. 네이밍 컨벤션
-- **snake_case**: Python 변수, 함수, 파일명, 폴더명
-- **PascalCase**: 클래스
-- **camelCase**: JavaScript 변수, 함수
-- **kebab-case**: URL, HTML, CSS
-- **UPPER_CASE**: 상수
-- **is_variable**: Boolean 값
-- **$variable**: JavaScript HTML DOM 조작
+- **snake_case** :  Python 변수, 함수, 파일명, 폴더명
+- **PascalCase** :  클래스
+- **camelCase** :  JavaScript 변수, 함수
+- **kebab-case** :  URL, HTML, CSS
+- **UPPER_CASE**:  상수
+- **is_variable** :  Boolean 값
+- **$variable** :  JavaScript HTML DOM 조작
 - *Github commit*: `(Gitmoji) Type: Message`
 
 <br><br>
@@ -302,7 +300,12 @@ App: blog                      | Views Function  | HTML File
 
 ### 5-1. 시작 페이지
 
+**로그인 X**
 <img src='./readme_img/홈로그인X.png'>
+
+<br>
+
+**로그인 O**
 <img src='./readme_img/홈로그인O.png'>
 
 - 처음 들어갔을 때 보이는 시작 페이지입니다.
