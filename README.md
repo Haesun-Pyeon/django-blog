@@ -5,25 +5,15 @@
 - **Hobby Space**는 취미 공유 블로그입니다.
 
 - 본인의 취미에 대한 글을 쓰고, 다른 사람의 취미를 카테고리와 태그로 분류하여 쉽게 알아갈 수 있습니다.
-  <br><br>
+<br><br>
 
-## 2. 사용한 기술스택 및 배포 URL
+## 2. 요구사항 분석
 
-### 2.1 사용한 기술스택
-
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> <img src="https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white"> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
-<img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
-<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
-<img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white">
-
-### 2.2 배포 URL
-
-https://haesun-pyeon.github.io/recipe-generator/
 <br><br>
 
 ## 3. 프로젝트 구조와 개발 일정
 
-### 3-1. 프로젝트 구조
+### 3-1. 디렉토리 구조
 
 ```bash
 <Hobby Space>
@@ -134,7 +124,7 @@ App: main                     | Views Function  | HTML File
 'about/'                      | about           | about.html
 'contact/'                    | contact         | contact.html
 
-App: main                     | Views Function  | HTML File
+App: accounts                 | Views Function  | HTML File
 'accounts/login/'             | login           | form.html
 'accounts/logout/'            | logout          | index.html (redirect)
 'accounts/register/'          | register        | form.html
@@ -143,7 +133,7 @@ App: main                     | Views Function  | HTML File
 'accounts/password/'          | password_edit   | form.html
 'accounts/delete/<int:pk>/'   | user_delete     | mypage.html (modal)
 
-App: main                     | Views Function  | HTML File
+App: blog                     | Views Function  | HTML File
 'blog/'                       | post_list       | post_list.html
 'blog/?q='                    | post_list       | post_list.html
 'blog/<int:pk>/'              | post_detail     | post_detail.html
@@ -163,10 +153,26 @@ App: main                     | Views Function  | HTML File
 ```
 
 ### 3-3. DataBase 구조
+<img src='./readme_img/DB.jpg'>
 
 ### 3-4. 개발 일정
 
 <img src='./readme_img/WBS.png'>
+<br><br>
+
+## 4. 사용한 기술스택 및 네이밍 컨벤션
+
+### 4-1. 사용한 기술스택
+
+<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+<img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white">
+<img src="https://img.shields.io/badge/bootstrap5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
+
+<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> <img src="https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white"> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+
+### 4-2. 네이밍 컨벤션
+아아
+네이밍컨벤션도 넣기...
 <br><br>
 
 <!-- 

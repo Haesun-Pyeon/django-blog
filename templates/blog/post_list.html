@@ -37,10 +37,10 @@
             <div class="col-lg-8">
                 {% for post in post_list %}
                 <div class="blog-entry d-flex blog-entry-search-item">
-                    <a href="{{ post.get_absolute_url }}" class="img-link me-4">
-                    <img src={% if post.head_image %}'{{ post.head_image.url }}'{% else %}"{% static 'images/post.jpg' %}"{% endif %} alt="post" class="img-fluid">
+                    <a href="{{ post.get_absolute_url }}" class="img-link" >
+                    <img src={% if post.head_image %}'{{ post.head_image.url }}'{% else %}"{% static 'images/post.jpg' %}"{% endif %} alt="post" class="img-fluid" style='width: 200px; height: 200px;'>
                     </a>
-
+    
                     <div>
                     <span class="date">{{ post.created_at }} &bullet; <a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a></span>
                     <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
@@ -85,7 +85,7 @@
                         {% for popular in popular_list %}
                         <li>
                             <a href="{{ popular.get_absolute_url }}">
-                            <img src={% if popular.head_image %}'{{ popular.head_image.url }}'{% else %}"{% static 'images/post.jpg' %}"{% endif %} alt="post" class="me-4 rounded">
+                            <img src={% if popular.head_image %}'{{ popular.head_image.url }}'{% else %}"{% static 'images/post.jpg' %}"{% endif %} alt="post" class="me-4 rounded" style='width: 90px; height: 90px;'>
                             <div class="text">
                                 <h4>{{ popular.title }}</h4>
                                 <div class="post-meta">

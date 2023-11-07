@@ -20,7 +20,16 @@
                     {% endfor %}
 				</div>
 				<div class="col-md-4">
-                    <a href="{{ popular.get_absolute_url }}" class="h-entry img-5 h-100 gradient">
+					<div class='text-center h-25'>
+						<h1 class='heading mt-1'>Hobby Space</h1>
+						{% if user.is_authenticated %}
+						<p class='mb-0'>{{ user.nickname }}님 안녕하세요</p>
+						{% endif %}
+						<button class='btn btn-primary mb-1 mt-1' onclick="location.href='{% url "post_list" %}'">입장하기</button>
+					</div>
+	
+	
+                    <a href="{{ popular.get_absolute_url }}" class="h-entry img-5 h-75 gradient">
 
 						<div class="featured-img" style="background-image: url({% if popular.head_image %}'{{ popular.head_image.url }}'{% else %}'{% static 'images/post.jpg' %}'{% endif %});"></div>
 

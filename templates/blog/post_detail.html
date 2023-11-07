@@ -25,7 +25,7 @@
 
         <div class="row blog-entries element-animate">
 
-            <div class="col-md-12 col-lg-8 main-content">
+            <div class="col-md-12 col-lg-8 main-content fs-5">
 
             <div class="post-content-body">
                 <p>{{ post.content | safe }}</p>
@@ -105,7 +105,7 @@
                 {% for popular in popular_list %}
                 <li>
                     <a href="{{ popular.get_absolute_url }}">
-                    <img src={% if popular.head_image %}'{{ popular.head_image.url }}'{% else %}"{% static 'images/post.jpg' %}"{% endif %} alt="post" class="me-4 rounded">
+                    <img src={% if popular.head_image %}'{{ popular.head_image.url }}'{% else %}"{% static 'images/post.jpg' %}"{% endif %} alt="post" class="me-4 rounded" style='width: 90px; height: 90px;'>
                     <div class="text">
                         <h4>{{ popular.title }}</h4>
                         <div class="post-meta">

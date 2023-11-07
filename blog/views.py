@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.text import slugify
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -52,7 +52,7 @@ class PostDetail(DetailView):
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get('pk')
-        post = Post.objects.get(pk=pk)
+        post = get_object_or_404(Post, pk=pk)
         post.view_count += 1
         post.save()
         return super().get_object(queryset)

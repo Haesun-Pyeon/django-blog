@@ -9,7 +9,7 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category_list'] = Category.objects.all()
-        context['popular'] = Post.objects.all().order_by('-view_count')[0:1]
+        context['popular'] = Post.objects.all().order_by('-view_count')[0]
         context['popular_list1'] = Post.objects.all().order_by(
             '-view_count')[1:3]
         context['popular_list2'] = Post.objects.all().order_by(
