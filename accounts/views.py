@@ -1,12 +1,11 @@
 # accounts/views.py
-from blog.models import Category, Comment
 from .forms import RegisterForm, UserUpdateForm
-from django.urls import reverse_lazy
+from blog.models import Category, Comment
 from django.contrib import messages
-from django.contrib.auth import get_user_model
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login as auth_login, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, DeleteView
 
 
@@ -14,14 +13,14 @@ class UserLoginView(LoginView):
     template_name = 'accounts/form.html'
 
     def get_context_data(self, **kwargs):
-        context = super(UserLoginView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['category_list'] = Category.objects.all()
         context['submit'] = '로그인'
         context['is_login'] = True
         return context
 
 
-class UserLogoutView(LogoutView):
+class UserLogoutView(LoginRequiredMixin, LogoutView):
     next_page = '/'
 
 
@@ -30,7 +29,7 @@ class UserCreateView(CreateView):
     template_name = 'accounts/form.html'
 
     def get_context_data(self, **kwargs):
-        context = super(UserCreateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['category_list'] = Category.objects.all()
         context['submit'] = '회원가입'
         return context
@@ -46,7 +45,7 @@ class UserReadView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/mypage.html'
 
     def get_context_data(self, **kwargs):
-        context = super(UserReadView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['category_list'] = Category.objects.all()
         context['comment_list'] = Comment.objects.filter(
             author=self.request.user).order_by('-pk')
@@ -63,7 +62,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def get_context_data(self, **kwargs):
-        context = super(UserUpdateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['category_list'] = Category.objects.all()
         context['submit'] = '수정'
         context['is_edit'] = True
@@ -79,7 +78,7 @@ class PasswordUpdateView(LoginRequiredMixin, PasswordChangeView):
     success_url = reverse_lazy('mypage')
 
     def get_context_data(self, **kwargs):
-        context = super(PasswordUpdateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['category_list'] = Category.objects.all()
         context['submit'] = '수정'
         context['is_edit'] = True
