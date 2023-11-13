@@ -3,13 +3,13 @@ from .forms import RegisterForm, UserUpdateForm
 from blog.models import Category, Comment
 from django.contrib import messages
 from django.contrib.auth import login as auth_login, get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, DeleteView
 
 
-class UserLoginView(LoginView):
+class UserLoginView(UserPassesTestMixin, LoginView):
     template_name = 'accounts/form.html'
 
     def get_context_data(self, **kwargs):
@@ -19,12 +19,15 @@ class UserLoginView(LoginView):
         context['is_login'] = True
         return context
 
+    def test_func(self):
+        return self.request.user.is_anonymous
+
 
 class UserLogoutView(LoginRequiredMixin, LogoutView):
     next_page = '/'
 
 
-class UserCreateView(CreateView):
+class UserCreateView(UserPassesTestMixin, CreateView):
     form_class = RegisterForm
     template_name = 'accounts/form.html'
 
@@ -39,6 +42,9 @@ class UserCreateView(CreateView):
         auth_login(self.request, self.object)
         messages.success(self.request, '회원가입이 완료되었습니다.')
         return response
+
+    def test_func(self):
+        return self.request.user.is_anonymous
 
 
 class UserReadView(LoginRequiredMixin, TemplateView):

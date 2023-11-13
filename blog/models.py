@@ -87,4 +87,4 @@ class Comment(models.Model):
         return f'[{self.post}] {self.content} :: {self.author}'
 
     def get_absolute_url(self):
-        return f'/blog/{self.post.pk}/'
+        return f'/blog/{self.post.pk}/#comment-{self.pk}'

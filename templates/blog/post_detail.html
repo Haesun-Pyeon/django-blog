@@ -51,6 +51,7 @@
                 <ul class="comment-list">
                     {% for comment in post.comments.all %}
                     <li class="comment">
+                        <a name="comment-{{ comment.id }}"></a>
                         <div class="vcard">
                         <img src={% if comment.author.profile_img %}'{{ comment.author.profile_img.url }}'{% else %}"{% static 'images/profile.png' %}"{% endif %} alt="profile">
                         </div>

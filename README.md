@@ -41,6 +41,7 @@
 
 ```bash
 <Hobby Space>
+├── .env
 ├── README.md
 ├── accounts
 │   ├── __init__.py
@@ -205,7 +206,7 @@ App: blog                      | Views Function  | HTML File
 ### 4-1. 기본 요구사항
 - UI 스타일: Bootstrap5 템플릿 이용
 - View 개발: 좋아요 기능은 함수형 뷰로, 나머지는 전부 클래스형 뷰로 구현
-- 모놀리식 개발 (DRF 사용X)
+- 모놀리식 개발 (DRF는 이 프로젝트에서 사용하지 않습니다.)
 - 데이터베이스 구조 설계 O
 
 ### 4-2. 메인 페이지 구현
